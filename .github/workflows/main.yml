@@ -20,7 +20,7 @@ jobs:
         # 'docker pull' step above has failed.
         if: failure()
         # This is where you use your published action from the marketplace!
-        uses: moazakramkhan1/Failing-CI-Analyst-Action@v1
+        uses: moazakramkhan1/Failing-CI-Analyst-Action@v1.0.0
         with:
           # You must pass the GITHUB_TOKEN to allow the action to fetch logs.
           github-token: ${{ secrets.GITHUB_TOKEN }}
