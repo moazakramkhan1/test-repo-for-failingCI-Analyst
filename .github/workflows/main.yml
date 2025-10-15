@@ -1,0 +1,29 @@
+name: Test AI Failure Analyst with Docker Pull Failure
+
+on: [push]
+
+jobs:
+  test-docker-failure:
+    runs-on: ubuntu-latest
+    # CRITICAL: This permission is required for your action to read workflow logs.
+    permissions:
+      actions: read
+
+    steps:
+      - name: 1. Attempt to pull a non-existent Docker image
+        # This command is guaranteed to fail because the image does not exist.
+        # The error log it produces is a perfect, realistic test case.
+        run: docker pull nonexistant-registry/this-image-does-not-exist:latest
+
+      - name: 2. Analyze Failure on Error
+        # This 'if: failure()' condition ensures this step ONLY runs if the
+        # 'docker pull' step above has failed.
+        if: failure()
+        # This is where you use your published action from the marketplace!
+        uses: moazakramkhan1/ci-failure-analyzer-action@v1
+        with:
+          # You must pass the GITHUB_TOKEN to allow the action to fetch logs.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+
